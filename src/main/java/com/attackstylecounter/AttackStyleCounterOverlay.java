@@ -2,8 +2,6 @@ package com.attackstylecounter;
 
 import javax.inject.Inject;
 import java.awt.*;
-
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import net.runelite.api.Client;
@@ -42,13 +40,18 @@ public class AttackStyleCounterOverlay extends Overlay {
         FontMetrics fontMetrics = graphics.getFontMetrics();
         final String countAsString = String.valueOf(count);
         final int textWidth = fontMetrics.stringWidth(countAsString);
-        final int height = client.getLocalPlayer().getLogicalHeight() + 20;
-        final LocalPoint localLocation = client.getLocalPlayer().getLocalLocation().dx(textWidth);
-        final int playerPlane = client.getTopLevelWorldView().getPlane();
-        final Point playerPoint = Perspective.localToCanvas(client, localLocation, playerPlane, height);
+        Point playerPoint = getPlayerPoint(client, textWidth);
 
         OverlayUtil.renderTextLocation(graphics, playerPoint, countAsString, Color.WHITE);
 
         return null;
+    }
+
+    private Point getPlayerPoint(Client client, int textWidth) {
+        final int height = client.getLocalPlayer().getLogicalHeight() + 20;
+        final LocalPoint localLocation = client.getLocalPlayer().getLocalLocation().dx(textWidth);
+        final int playerPlane = client.getTopLevelWorldView().getPlane();
+
+        return Perspective.localToCanvas(client, localLocation, playerPlane, height);
     }
 }
